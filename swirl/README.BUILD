@@ -1,18 +1,4 @@
-X = $(wildcard *.c)
-O = $(X:.c=.o)
-
-L=vortex.so
-
-do: build README.API
-	$(MAKE) -C ../c
-
-README.API: vmain.c
-	luadoc vmain.c > README.API
-
-run:
-	./local/lua lchatd
-
-build: $L
+# Outline of a Makefile, will need modification for local environment.
 
 LDFLAGS= -g
 CFLAGS= -g -Wall -Werror
@@ -31,6 +17,9 @@ export MACOSX_DEPLOYMENT_TARGET
 CFLAGS+=-fno-common
 LDFLAGS+=-bundle -undefined dynamic_lookup
 
-$L: $O
+vortex.so: vmain.o
 	gcc $(LDFLAGS) -o $@ $^ $(LDLIBS)
+
+
+chat-client: chat-client.o
 
