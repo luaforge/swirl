@@ -10,6 +10,13 @@
 For debugging purposes, return a string identifying the connection.
 
 
+-- ok = conn:close()
+
+Close connection.
+
+Ref: vortex_connection_close()
+
+
 -- host = conn:host()
 
 Host name of connection.
