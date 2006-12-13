@@ -17,6 +17,13 @@ Close connection.
 Ref: vortex_connection_close()
 
 
+-- bool = conn:ok()
+
+Whether connection is connected.
+
+Ref: vortex_connection_is_ok()
+
+
 -- host = conn:host()
 
 Host name of connection.
@@ -51,6 +58,9 @@ Ref: vortex_connection_get_features()
 Get channel from a connection by the BEEP channel number.
 
 Ref: vortex_connection_get_channel()
+
+
+-- conn:channel_new{profile=str, encoding=<none|base64>, content=str, on_created=fn(chan)}
 
 
 
@@ -142,6 +152,16 @@ Errors on failure.
 See: chan:send_ans()
 
 
+-- chan:close([fn(conn, channo, was_closed, code, msg)])
+
+fn is optional
+
+was_closed is a boolean, code is a string, msg is a string
+
+Ref: vortex_channel_close()
+Ref: VortexOnClosedNotification
+
+
 
 
 ** frame - object wrapper for VortexFrame
@@ -219,6 +239,11 @@ Ref: vortex_frame_get_id()
 ** vortex - profile registration and application management
 
 
+TODO
+
+- all callback functions called on_? on_start, on_close, on_frame, ...?
+
+
 -- vortex:profiles_register{profile=str, start=fn, frame=fn, close=fn}
 
 The start fn is:
@@ -234,6 +259,7 @@ The frame fn is:
 
 The close fn is:
   ok = function(chan, conn)
+
 ok is true to accept the channel close, false to refuse channel close.
 
 
@@ -255,11 +281,11 @@ Creates a new listener on host and port.
 
 Host is optional, it defaults to INADDR_ANY ("0.0.0.0").
 
+TODO - Port should be optional, so it can default to an ephemeral port.
+
 TODO - accept a table of arguments:
   on_ready=
   on_accept=
-
-TODO - all callback functions called on_? on_start, on_close, on_frame, ...?
 
 Ref: vortex_listener_new()
 
@@ -279,3 +305,27 @@ Causes vortex:listener_wait() to return, blocking any vortex
 processing.
 
 Until listener_wait() is called again no further vortex activity will occur.
+
+
+-- vortex:connection_new{host=str, port=str, on_connected=fn(conn)}
+
+host to connect to, optional, defaults to 127.0.0.1
+
+port to connect to
+
+on_connected, a function that will be called with the connection when
+it is established. Note that the connection may not be connected, call
+conn:ok() to determine if it was successful!
+
+If you don't provide the on_connected, you won't get a connection object, so
+the connection will be effectively unusable unless the listener makes a
+connection back to you!
+
+
+-- vortex:log_enable(["no"|"yes"|"color"])
+
+Enable log ("yes", or no options), enable color log ("color"), or
+disable log ("no").
+
+Ref: vortex_color_log_enable()
+Ref: vortex_log_enable()
